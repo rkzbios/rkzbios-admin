@@ -106,3 +106,14 @@ query{
 ```
 sudo mysql --host=127.0.0.1  --port=10306 -u root -p
 ```
+or
+```
+docker-compose exec db mysql -uroot -pengage
+```
+
+ALTER USER 'root' IDENTIFIED WITH mysql_native_password BY 'engage';
+ALTER USER 'rkzbios' IDENTIFIED WITH mysql_native_password BY 'welcome';
+
+
+sudo docker-compose exec rkzbios-admin python3 /code/manage.py migrate --no-input
+sudo docker-compose exec rkzbios-admin python3 /code/manage.py collectstatic --no-input
