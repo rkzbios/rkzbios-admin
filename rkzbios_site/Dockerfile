@@ -2,6 +2,13 @@
 FROM python:3.7
 LABEL maintainer="robert.hofstra@gmail.com"
 
+
+RUN \
+  apt-get update && \
+  apt-get upgrade -y && \
+  apt-get install libmysqlclient-dev -y && \
+  rm -rf /var/lib/apt/lists/*
+
 # Set environment varibles
 ENV PYTHONUNBUFFERED 1
 ENV DJANGO_ENV production
