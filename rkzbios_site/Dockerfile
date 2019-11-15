@@ -10,7 +10,7 @@ RUN apt-get install python3-dev default-libmysqlclient-dev  -y
 RUN \
   apt-get update && \
   apt-get upgrade -y && \
-  apt-get python3-dev default-libmysqlclient-dev  -y && \
+  apt-get install python3-dev default-libmysqlclient-dev  -y && \
   rm -rf /var/lib/apt/lists/*
 
 # Set environment varibles
