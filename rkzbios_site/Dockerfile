@@ -3,11 +3,15 @@ FROM python:3.7
 LABEL maintainer="robert.hofstra@gmail.com"
 
 
-RUN \
-  apt-get update && \
-  apt-get upgrade -y && \
-  apt-get install libmysqlclient-dev -y && \
-  rm -rf /var/lib/apt/lists/*
+RUN set -e; \
+        apk add --no-cache --virtual .build-deps \
+                gcc \
+                libc-dev \
+                linux-headers \
+                mariadb-dev \
+                python3-dev \
+                postgresql-dev \
+        ;
 
 # Set environment varibles
 ENV PYTHONUNBUFFERED 1
