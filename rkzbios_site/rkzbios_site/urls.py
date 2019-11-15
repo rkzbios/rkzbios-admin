@@ -11,6 +11,8 @@ from graphene_django.views import GraphQLView
 
 from search import views as search_views
 
+from .api import api_router
+
 urlpatterns = [
     url(r'^django-admin/', admin.site.urls),
 
@@ -22,6 +24,7 @@ urlpatterns = [
     url(r'^api/graphql', csrf_exempt(GraphQLView.as_view())),
     url(r'^api/graphiql', csrf_exempt(GraphQLView.as_view(graphiql=True, pretty=True))),
 
+    url(r'^api/v2/', api_router.urls),
 
     # For anything not caught by a more specific rule above, hand over to
     # Wagtail's page serving mechanism. This should be the last pattern in

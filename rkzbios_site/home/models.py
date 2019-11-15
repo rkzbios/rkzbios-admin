@@ -5,9 +5,11 @@ from wagtail.core.models import Page
 
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.core import blocks
-from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel, InlinePanel, MultiFieldPanel
+from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel, InlinePanel, PageChooserPanel, MultiFieldPanel
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.images.edit_handlers import ImageChooserPanel
+from wagtail.api import APIField
+from wagtail.images.api.fields import ImageRenditionField
 
 
 class HomePage(Page):
@@ -17,10 +19,18 @@ class HomePage(Page):
 from modelcluster.fields import ParentalKey
 from wagtail.core.models import Orderable
 
+
 class FilmPage(Page):
 
-
     filmPoster = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
+
+    filmBack = models.ForeignKey(
         'wagtailimages.Image',
         null=True,
         blank=True,
@@ -37,7 +47,15 @@ class FilmPage(Page):
     lengthInMinutes = models.IntegerField(null=True, blank=True)
     minimumAge = models.IntegerField(null=True, blank=True)
 
-    trailer =  models.URLField("Trailer", blank=True, null=True)
+    trailer = models.URLField("Trailer", blank=True, null=True)
+
+    doubleBillFilm = models.ForeignKey(
+        'wagtailcore.Page',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+    )
 
     body = StreamField([
         ('heading', blocks.CharBlock(classname="full title")),
@@ -49,7 +67,6 @@ class FilmPage(Page):
         ])),
     ])
 
-
     content_panels = Page.content_panels + [
         FieldPanel('director'),
         FieldPanel('country'),
@@ -60,11 +77,28 @@ class FilmPage(Page):
         FieldPanel('lengthInMinutes'),
         FieldPanel('minimumAge'),
 
+        PageChooserPanel('doubleBillFilm', 'home.FilmPage'),
+
         ImageChooserPanel('filmPoster'),
+        ImageChooserPanel('filmBack'),
+
         FieldPanel('trailer'),
         InlinePanel('film_dates', label="Film dates"),
         InlinePanel('external_links', label="External links"),
         StreamFieldPanel('body'),
+
+    ]
+
+    api_fields = [
+        APIField('director'),
+        APIField('country'),
+        APIField('body'),
+        APIField('releaseDate'),
+        APIField('movieType'),
+        APIField('spokenLanguage'),
+        APIField('subtitleLanguage'),
+        APIField('lengthInMinutes'),
+        APIField('minimumAge'),
 
     ]
 
