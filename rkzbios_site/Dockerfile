@@ -5,6 +5,7 @@ LABEL maintainer="robert.hofstra@gmail.com"
 # Set environment varibles
 ENV PYTHONUNBUFFERED 1
 ENV DJANGO_ENV production
+ENV DJANGO_SETTINGS_MODULE rkzbios_site.settings.production
 
 COPY ./requirements.txt /code/requirements.txt
 RUN pip install --upgrade pip
@@ -16,8 +17,6 @@ RUN pip install gunicorn
 COPY . /code/
 # Set the working directory to /code/
 WORKDIR /code/
-
-RUN python manage.py migrate
 
 RUN useradd wagtail
 RUN chown -R wagtail /code

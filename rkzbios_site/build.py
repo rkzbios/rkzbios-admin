@@ -5,9 +5,9 @@ NAME = "rkzbios-admin"
 
 
 def build():
-    tag = subprocess.check_output(["git", "describe"])[:-1]
+    tag = subprocess.check_output(["git", "describe"])[:-1].decode('utf-8')
 
-    build_image = raw_input("Build a image with version %s y/n ...  " % tag)
+    build_image = input("Build a image with version %s y/n ...  " % tag)
 
     if build_image == "y":
 
@@ -23,7 +23,7 @@ def build():
         cmd = ["sudo", "docker", "tag", name, registry_name]
         subprocess.call(cmd)
 
-        to_docker_registry = raw_input("Push docker image in  dockerregistry.jimboplatform.nl?   y/n ")
+        to_docker_registry = input("Push docker image in  dockerregistry.jimboplatform.nl?   y/n ")
         if to_docker_registry == 'y':
             cmd = ["sudo", "docker", "login", "dockerregistry.jimboplatform.nl"]
             subprocess.call(cmd)

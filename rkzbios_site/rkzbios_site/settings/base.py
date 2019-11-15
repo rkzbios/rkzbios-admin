@@ -101,16 +101,7 @@ WSGI_APPLICATION = 'rkzbios_site.wsgi.application'
 # }
 
 
-DATABASES = {
-  'default': {
-    'ENGINE': 'django.db.backends.mysql',
-    'NAME': 'rkzbios',
-    'USER': 'rkzbios',
-    'PASSWORD': 'welcome',
-    'HOST': '127.0.0.1', # Or an IP Address that your DB is hosted on
-    'PORT': '3306',
-  }
-}
+
 
 
 # Password validation
