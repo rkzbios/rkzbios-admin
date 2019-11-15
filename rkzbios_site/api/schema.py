@@ -8,7 +8,7 @@ from django.db import models
 class FilmPageNode(DjangoObjectType):
     class Meta:
         model = FilmPage
-        fields = ['id', 'title','director','country','body','film_dates']
+        fields = ['id', 'title','director','country','body','film_dates','filmPoster','filmBack']
 
 
 class FilmdatesType(DjangoObjectType):

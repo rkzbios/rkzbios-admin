@@ -4,7 +4,7 @@ LABEL maintainer="robert.hofstra@gmail.com"
 
 # Set environment varibles
 ENV PYTHONUNBUFFERED 1
-ENV DJANGO_ENV dev
+ENV DJANGO_ENV production
 
 COPY ./requirements.txt /code/requirements.txt
 RUN pip install --upgrade pip
