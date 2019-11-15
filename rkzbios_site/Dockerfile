@@ -5,7 +5,7 @@ LABEL maintainer="robert.hofstra@gmail.com"
 # Set environment varibles
 ENV PYTHONUNBUFFERED 1
 ENV DJANGO_ENV production
-ENV DJANGO_SETTINGS_MODULE rkzbios_site.settings.productionn
+ENV DJANGO_SETTINGS_MODULE rkzbios_site.settings.production
 
 COPY ./requirements.txt /code/requirements.txt
 RUN pip install --upgrade pip
