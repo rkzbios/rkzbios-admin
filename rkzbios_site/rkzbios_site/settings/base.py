@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'modelcluster',
     'taggit',
     'rest_framework',
-
+    'corsheaders',
 #    'embed_video',
 
     'django.contrib.admin',
@@ -56,6 +56,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',

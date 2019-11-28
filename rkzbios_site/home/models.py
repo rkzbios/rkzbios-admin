@@ -9,8 +9,10 @@ from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel, InlinePane
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.api import APIField
-from wagtail.images.api.fields import ImageRenditionField
+from wagtail.images.api.fields import ImageRenditionField, Field
 
+
+from rest_framework import serializers
 
 class HomePage(Page):
     pass
@@ -20,9 +22,42 @@ from modelcluster.fields import ParentalKey
 from wagtail.core.models import Orderable
 
 
-class FilmPage(Page):
 
-    filmPoster = models.ForeignKey(
+
+class ExternalLink(Orderable):
+    page = ParentalKey('MoviePage', on_delete=models.CASCADE, related_name='externalLinks')
+    typeLink = models.CharField(max_length=256, null=True, blank=True)
+    linkExternal = models.URLField("External link", blank=True)
+
+    panels = [
+        FieldPanel('typeLink'),
+        FieldPanel('linkExternal'),
+    ]
+
+
+class Moviedate(Orderable):
+    page = ParentalKey('MoviePage', on_delete=models.CASCADE, related_name='movieDates')
+    date = models.DateTimeField("Show Date")
+
+    panels = [
+        FieldPanel('date'),
+    ]
+
+class MovieDateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Moviedate
+        fields = ['date']
+
+class ExternalLinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExternalLink
+        fields = ['typeLink','linkExternal']
+
+
+
+class MoviePage(Page):
+
+    moviePoster = models.ForeignKey(
         'wagtailimages.Image',
         null=True,
         blank=True,
@@ -30,7 +65,7 @@ class FilmPage(Page):
         related_name='+'
     )
 
-    filmBack = models.ForeignKey(
+    movieBackDrop = models.ForeignKey(
         'wagtailimages.Image',
         null=True,
         blank=True,
@@ -46,10 +81,13 @@ class FilmPage(Page):
     subtitleLanguage = models.CharField(max_length=255, null=True, blank=True)
     lengthInMinutes = models.IntegerField(null=True, blank=True)
     minimumAge = models.IntegerField(null=True, blank=True)
+    premiere = models.BooleanField(default=False)
+    showStartDate = models.DateField(null=True, blank=True)
+    showEndDate = models.DateField(null=True, blank=True)
 
     trailer = models.URLField("Trailer", blank=True, null=True)
 
-    doubleBillFilm = models.ForeignKey(
+    doubleBillMovie = models.ForeignKey(
         'wagtailcore.Page',
         null=True,
         blank=True,
@@ -65,7 +103,7 @@ class FilmPage(Page):
             ('text', blocks.TextBlock()),
             ('author', blocks.CharBlock()),
         ])),
-    ])
+    ], blank=True, null=True)
 
     content_panels = Page.content_panels + [
         FieldPanel('director'),
@@ -76,15 +114,16 @@ class FilmPage(Page):
         FieldPanel('subtitleLanguage'),
         FieldPanel('lengthInMinutes'),
         FieldPanel('minimumAge'),
+        FieldPanel('premiere'),
 
-        PageChooserPanel('doubleBillFilm', 'home.FilmPage'),
+        PageChooserPanel('doubleBillMovie', 'home.MoviePage'),
 
-        ImageChooserPanel('filmPoster'),
-        ImageChooserPanel('filmBack'),
+        ImageChooserPanel('moviePoster'),
+        ImageChooserPanel('movieBackDrop'),
 
         FieldPanel('trailer'),
-        InlinePanel('film_dates', label="Film dates"),
-        InlinePanel('external_links', label="External links"),
+        InlinePanel('movieDates', label="Movie dates"),
+        InlinePanel('externalLinks', label="External links"),
         StreamFieldPanel('body'),
 
     ]
@@ -98,9 +137,34 @@ class FilmPage(Page):
         APIField('spokenLanguage'),
         APIField('subtitleLanguage'),
         APIField('lengthInMinutes'),
+        APIField('premiere'),
         APIField('minimumAge'),
+        APIField('movieDates', serializer=MovieDateSerializer(many=True, read_only=True)),
+        APIField('externalLinks', serializer=ExternalLinkSerializer(many=True, read_only=True)),
+        APIField('moviePoster'),
+        APIField('moviePosterThumb', serializer=ImageRenditionField('fill-100x100', source='moviePoster')),
+        APIField('movieBackDrop'),
 
     ]
+
+    def get_start_date(self, current_date, date_to_compare):
+        return date_to_compare if (current_date is None) or (date_to_compare < current_date) else current_date
+
+    def get_end_date(self, current_date, date_to_compare):
+        return date_to_compare if (current_date is None) or (date_to_compare > current_date) else current_date
+
+    def save(self, *args, **kwargs):
+        start_date_time = None
+        end_date_time = None
+        for movie_date in self.movieDates.all():
+            start_date_time = self.get_start_date( start_date_time, movie_date.date)
+            end_date_time = self.get_end_date( end_date_time, movie_date.date)
+
+        if start_date_time and end_date_time:
+            self.showStartDate = start_date_time.date()
+            self.showEndDate = end_date_time.date()
+
+        super().save(*args, **kwargs)  # Call the "real" save() method.
 
     # promote_panels = [
     #     MultiFieldPanel(Page.promote_panels, "Common page configuration"),
@@ -125,22 +189,21 @@ class FilmPage(Page):
 # }
 # }
 
-class Filmdates(Orderable):
-    page = ParentalKey(FilmPage, on_delete=models.CASCADE, related_name='film_dates')
-    date = models.DateTimeField("Show Date")
+class ContentPage(Page):
+    body = StreamField([
+        ('heading', blocks.CharBlock(classname="full title")),
+        ('paragraph', blocks.TextBlock()),
+        ('image', ImageChooserBlock()),
+        ('quotation', blocks.StructBlock([
+            ('text', blocks.TextBlock()),
+            ('author', blocks.CharBlock()),
+        ])),
+    ], blank=True, null=True)
 
-    panels = [
-        FieldPanel('date'),
+    content_panels = Page.content_panels + [
+        StreamFieldPanel('body'),
     ]
 
-class ExternalLinks(Orderable):
-    page = ParentalKey(FilmPage, on_delete=models.CASCADE, related_name='external_links')
-    typeLink = models.CharField(max_length=256, null=True, blank=True)
-    linkExternal = models.URLField("External link", blank=True)
-
-    panels = [
-        FieldPanel('typeLink'),
-        FieldPanel('linkExternal'),
+    api_fields = [
+        APIField('body'),
     ]
-
-

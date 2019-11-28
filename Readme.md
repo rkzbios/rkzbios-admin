@@ -14,7 +14,7 @@ https://github.com/humanmade/react-oembed-container
 http://localhost:8000/api/graphiql/#query=query%7B%0A%20%20films%7B%0A%20%20%20%20id%2C%0A%20%20%20%20title%2C%0A%20%20%20%20body%2C%0A%20%20%20%20director%2C%0A%20%20%20%20country%2C%0A%20%20%20%20filmDates%7B%0A%20%20%20%20%20%20date%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%7D%0A%7D
 
 
-
+https://learnwagtail.com/
 
 Nieuwsbrief heeft elk maand een eigen intro.
 * Solving loading multiple at once [Dataloaders n 1](
@@ -108,12 +108,19 @@ sudo mysql --host=127.0.0.1  --port=10306 -u root -p
 ```
 or
 ```
-docker-compose exec db mysql -uroot -pengage
+docker-compose exec db mysql -uroot -pxxxxxxx
+
+ALTER USER 'root' IDENTIFIED WITH mysql_native_password BY 'xxxxxxxx';
+ALTER USER 'rkzbios' IDENTIFIED WITH mysql_native_password BY 'xxxxxxx';
 ```
 
-ALTER USER 'root' IDENTIFIED WITH mysql_native_password BY 'engage';
-ALTER USER 'rkzbios' IDENTIFIED WITH mysql_native_password BY 'welcome';
 
 
 sudo docker-compose exec rkzbios-admin python3 /code/manage.py migrate --no-input
+sudo docker-compose exec rkzbios-admin python3 /code/manage.py  --no-input
 sudo docker-compose exec rkzbios-admin python3 /code/manage.py collectstatic --no-input
+
+
+http://localhost:8000/api/v2/moviePages/?fields=director,country,moviePoster,movieDates,externalLinks&currentActive=true
+
+http://localhost:8000/api/v2/pages/?slug=contact&fields=body&type=home.ContentPage
