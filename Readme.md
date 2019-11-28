@@ -101,26 +101,61 @@ query{
 }
 ```
 
-# Docker
+# Docker, initial setup
+
+## Create the peristent volumes
+```
+# sudo docker volume create --name=rkzbios-mysql-data
+sudo docker volume create --name=rkzbios-media-data
+```
+
+## Startup the containers
 
 ```
-sudo mysql --host=127.0.0.1  --port=10306 -u root -p
+sudo docker-compose up 
 ```
-or
-```
-docker-compose exec db mysql -uroot -pxxxxxxx
+Wait for intialization of the mysql docker container, this can take some time (10minutes), I don't know why it takes
+so long.
 
+Don't stop the container, otherwise its not correct initialized!
+
+```
+sudo docker-compose exec db mysql -uroot -pxxxxxxx
+```
+
+In the mysql console 
+```
 ALTER USER 'root' IDENTIFIED WITH mysql_native_password BY 'xxxxxxxx';
 ALTER USER 'rkzbios' IDENTIFIED WITH mysql_native_password BY 'xxxxxxx';
 ```
 
+This because otherwise you get this errror
 
+```python
+django.db.utils.OperationalError: (1045, 'Plugin caching_sha2_password could not be loaded: /usr//usr/lib/x86_64-linux-gnu/mariadb19/plugin/caching_sha2_password.so: cannot open shared object file: No such file or directory')
+```
 
 sudo docker-compose exec rkzbios-admin python3 /code/manage.py migrate --no-input
-sudo docker-compose exec rkzbios-admin python3 /code/manage.py  --no-input
 sudo docker-compose exec rkzbios-admin python3 /code/manage.py collectstatic --no-input
+sudo docker-compose exec rkzbios-admin python3 /code/manage.py createsuperuser
+
+
+# Docker, each upgrade
+
+sudo docker-compose exec rkzbios-admin python3 /code/manage.py migrate --no-input
+sudo docker-compose exec rkzbios-admin python3 /code/manage.py collectstatic --no-input
+
 
 
 http://localhost:8000/api/v2/moviePages/?fields=director,country,moviePoster,movieDates,externalLinks&currentActive=true
 
 http://localhost:8000/api/v2/pages/?slug=contact&fields=body&type=home.ContentPage
+
+
+# Docker and docker-compose development commands
+
+Remove containers
+```
+sudo docker volume rm rkzbios-mysql-data
+sudo docker volume rm rkzbios-media-data
+```
