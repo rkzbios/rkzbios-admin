@@ -147,8 +147,8 @@ sudo docker-compose exec rkzbios-admin python3 /code/manage.py collectstatic --n
 
 
 
-http://localhost:8000/api/v2/moviePages/?fields=director,country,moviePoster,movieDates,externalLinks&currentActive=true
-
+http://localhost:8000/api/v2/moviePages/?fields=doubleBillMovie,director,country,moviePoster,movieDates,externalLinks&currentActive=true
+http://localhost:8000/api/v2/moviePages/?fields=doubleBillMovie(moviePoster),director,country,moviePoster,movieDates,externalLinks&currentActive=true
 http://localhost:8000/api/v2/pages/?slug=contact&fields=body&type=home.ContentPage
 
 
@@ -159,3 +159,6 @@ Remove containers
 sudo docker volume rm rkzbios-mysql-data
 sudo docker volume rm rkzbios-media-data
 ```
+
+# Backup Database
+sudo docker-compose exec db mysqldump -uroot -pengage --complete-insert  rkzbios > rkzbios-backup.sql
