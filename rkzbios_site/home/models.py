@@ -1,8 +1,8 @@
 from django.db import models
 
+from modelcluster.fields import ParentalKey
+
 from wagtail.core.models import Page
-
-
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.core import blocks
 from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel, InlinePanel, PageChooserPanel, MultiFieldPanel
@@ -10,18 +10,13 @@ from wagtail.images.blocks import ImageChooserBlock
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.api import APIField
 from wagtail.images.api.fields import ImageRenditionField, Field
-
+from wagtail.core.models import Orderable
 
 from rest_framework import serializers
 
+
 class HomePage(Page):
     pass
-
-
-from modelcluster.fields import ParentalKey
-from wagtail.core.models import Orderable
-
-
 
 
 class ExternalLink(Orderable):
@@ -43,16 +38,17 @@ class Moviedate(Orderable):
         FieldPanel('date'),
     ]
 
+
 class MovieDateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Moviedate
         fields = ['date']
 
+
 class ExternalLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExternalLink
         fields = ['typeLink','linkExternal']
-
 
 
 class MoviePage(Page):
@@ -88,7 +84,7 @@ class MoviePage(Page):
     trailer = models.URLField("Trailer", blank=True, null=True)
 
     doubleBillMovie = models.ForeignKey(
-        'wagtailcore.Page',
+        'MoviePage',
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
@@ -139,6 +135,7 @@ class MoviePage(Page):
         APIField('lengthInMinutes'),
         APIField('premiere'),
         APIField('minimumAge'),
+        APIField('doubleBillMovie'),
         APIField('movieDates', serializer=MovieDateSerializer(many=True, read_only=True)),
         APIField('externalLinks', serializer=ExternalLinkSerializer(many=True, read_only=True)),
         APIField('moviePoster'),
