@@ -1,6 +1,8 @@
 from django.db import models
+from django import forms
 
 from modelcluster.fields import ParentalKey
+from modelcluster.fields import ParentalManyToManyField
 
 from wagtail.core.models import Page
 from wagtail.core.fields import RichTextField, StreamField
@@ -17,6 +19,19 @@ from rest_framework import serializers
 
 class HomePage(Page):
     pass
+
+
+class KijkWijzerClassification(models.Model):
+    label = models.CharField(max_length= 36)
+    icon  = models.CharField(max_length= 36)
+
+    panels = [
+        FieldPanel('label'),
+        FieldPanel('icon'),
+    ]
+
+    def __str__(self):
+        return '{}'.format(self.label)
 
 
 class ExternalLink(Orderable):
@@ -44,11 +59,17 @@ class MovieDateSerializer(serializers.ModelSerializer):
         model = Moviedate
         fields = ['date']
 
+class KijkWijzerClassificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = KijkWijzerClassification
+        fields = ['label','icon']
+
 
 class ExternalLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExternalLink
         fields = ['typeLink','linkExternal']
+
 
 
 class MoviePage(Page):
@@ -80,6 +101,8 @@ class MoviePage(Page):
     premiere = models.BooleanField(default=False)
     showStartDate = models.DateField(null=True, blank=True)
     showEndDate = models.DateField(null=True, blank=True)
+    classifications = ParentalManyToManyField(KijkWijzerClassification, blank=True)
+
 
     trailer = models.URLField("Trailer", blank=True, null=True)
 
@@ -101,6 +124,8 @@ class MoviePage(Page):
         ])),
     ], blank=True, null=True)
 
+
+
     content_panels = Page.content_panels + [
         FieldPanel('director'),
         FieldPanel('country'),
@@ -120,6 +145,9 @@ class MoviePage(Page):
         FieldPanel('trailer'),
         InlinePanel('movieDates', label="Movie dates"),
         InlinePanel('externalLinks', label="External links"),
+        FieldPanel('classifications',widget=forms.CheckboxSelectMultiple),
+        # InlinePanel( 'classifications', label="Categories"),
+
         StreamFieldPanel('body'),
 
     ]
@@ -141,6 +169,8 @@ class MoviePage(Page):
         APIField('moviePoster'),
         APIField('moviePosterThumb', serializer=ImageRenditionField('fill-100x100', source='moviePoster')),
         APIField('movieBackDrop'),
+        APIField('trailer'),
+        APIField('classifications', serializer=KijkWijzerClassificationSerializer(many=True, read_only=True)),
 
     ]
 
@@ -186,21 +216,58 @@ class MoviePage(Page):
 # }
 # }
 
+from wagtail.core.blocks import StreamBlock
+
+class MyStreamBlock(StreamBlock):
+
+    def transform_child(self, child, context):
+        return {
+            'type': child.block.name,
+            'value': child.block.get_api_representation(child.value, context=context),
+            'id': child.id
+        }
+
+    def get_api_representation(self, value, context=None):
+        if value is None:
+            # treat None as identical to an empty stream
+            return []
+
+        result = []
+        for child in value:  # child is a StreamChild instance
+            result.append( self.transform_child(child, context))
+        return result
+
+from django.db import models
+
+
+class MyImageChooserBlock(ImageChooserBlock):
+
+    def get_api_representation(self, value, context=None):
+        return value.file.url
+
+
 class ContentPage(Page):
-    body = StreamField([
+    pageBackDrop = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
+    body = StreamField(MyStreamBlock([
         ('heading', blocks.CharBlock(classname="full title")),
         ('paragraph', blocks.TextBlock()),
-        ('image', ImageChooserBlock()),
-        ('quotation', blocks.StructBlock([
-            ('text', blocks.TextBlock()),
-            ('author', blocks.CharBlock()),
-        ])),
-    ], blank=True, null=True)
+        ('image', MyImageChooserBlock()),
+    ], blank=True, null=True))
+
+
 
     content_panels = Page.content_panels + [
+        ImageChooserPanel('pageBackDrop'),
         StreamFieldPanel('body'),
     ]
 
     api_fields = [
+        APIField('pageBackDrop'),
         APIField('body'),
     ]

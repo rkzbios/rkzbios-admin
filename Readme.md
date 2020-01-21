@@ -135,16 +135,19 @@ This because otherwise you get this errror
 django.db.utils.OperationalError: (1045, 'Plugin caching_sha2_password could not be loaded: /usr//usr/lib/x86_64-linux-gnu/mariadb19/plugin/caching_sha2_password.so: cannot open shared object file: No such file or directory')
 ```
 
+```
 sudo docker-compose exec rkzbios-admin python3 /code/manage.py migrate --no-input
 sudo docker-compose exec rkzbios-admin python3 /code/manage.py collectstatic --no-input
 sudo docker-compose exec rkzbios-admin python3 /code/manage.py createsuperuser
+```
 
 
 # Docker, each upgrade
 
+```
 sudo docker-compose exec rkzbios-admin python3 /code/manage.py migrate --no-input
 sudo docker-compose exec rkzbios-admin python3 /code/manage.py collectstatic --no-input
-
+```
 
 
 http://localhost:8000/api/v2/moviePages/?fields=doubleBillMovie,director,country,moviePoster,movieDates,externalLinks&currentActive=true
