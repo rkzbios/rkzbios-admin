@@ -1,5 +1,6 @@
 from django.db import models
 from django import forms
+from django.utils import timezone
 
 from modelcluster.fields import ParentalKey
 from modelcluster.fields import ParentalManyToManyField
@@ -44,10 +45,15 @@ class ExternalLink(Orderable):
         FieldPanel('linkExternal'),
     ]
 
+def default_movie_date():
+     now = timezone.now()
+     default = now.replace(hour=20,minute=30,second=0,microsecond=0)
+     return default
+
 
 class Moviedate(Orderable):
     page = ParentalKey('MoviePage', on_delete=models.CASCADE, related_name='movieDates')
-    date = models.DateTimeField("Show Date")
+    date = models.DateTimeField("Show Date", default=default_movie_date)
 
     panels = [
         FieldPanel('date'),
