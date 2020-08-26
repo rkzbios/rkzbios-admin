@@ -3,3 +3,11 @@ wagtail>=2.7,<2.8
 graphene-django>=2.0
 mysqlclient
 django-cors-headers==3.2.0
+Jinja2==2.11.1
+shortuuid==1.0.1
+qrcode==6.1
+pycryptodome==3.9.8
+djangorestframework-simplejwt==4.3.0
+mollie-api-python==2.4.0
+
+

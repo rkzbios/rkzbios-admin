@@ -1,6 +1,7 @@
 from .base import *
 
-DEBUG = True
+DEBUG = False
+DEVELOPMENT = False
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -11,6 +12,9 @@ ALLOWED_HOSTS = ['*']
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+PDF_SERVER = 'http://printservice.jimbogo.com'
+RKZBIOS_WEBSITE = 'http://rkzbios.nl'
+MOLIE_API_KEY = ""
 
 DATABASES = {
   'default': {

@@ -1,0 +1,79 @@
+import uuid
+from uso.core.jinja import render_to_string
+from uso.core.usosites import get_site_templates
+
+from uso.usosites.models import UsoSite
+
+class NewsletterService(object):
+
+    def _send_confirmation_mail(self, site_id, email_address, confirmation_url):
+        try:
+            site = UsoSite.objects.get(id = site_id)
+            text_content = render_to_string(get_site_templates( site,'component/newsletter/confirm_subscription.txt' ), {'confirmationUrl': confirmation_url})
+
+            if settings.DEVELOPMENT:
+                email_address = settings.TEST_MAIL_ADDRESS
+            else:
+                from_email = site.get_setting("from_email")
+
+            from_email = site.get_setting("from_email")
+
+            subject =  "Bevestig uw nieuwsbrief inschrijving"
+            msg = EmailMessage(subject, text_content, from_email, [email_address])
+            mailer.send_mail_message(site.id, msg)
+        except Exception:
+            mail_logger.error("Error sending confirmation mail " , exc_info = 1 )
+
+
+
+
+    def subscribe(self, site_id, naam, email, confirm_token, confirmation_url):
+        """
+
+
+        needs_confirmation = False
+
+        try:
+            nieuws_brief_aanmelding = NieuwsbriefAanmelding.objects.get(email=email)
+            # subscription does already exists, do nothing
+        except ObjectDoesNotExist, _odne:
+            needs_confirmation = True
+            nieuws_brief_aanmelding = NieuwsbriefAanmelding()
+            nieuws_brief_aanmelding.naam = naam
+            nieuws_brief_aanmelding.email = email
+            nieuws_brief_aanmelding.confirm_token = confirm_token
+            nieuws_brief_aanmelding.unsubscribe_token = str(uuid.uuid4())
+            nieuws_brief_aanmelding.active = False
+            nieuws_brief_aanmelding.save()
+
+        if needs_confirmation:
+            self._send_confirmation_mail(site_id, email, confirmation_url)
+
+        """
+        pass
+
+    def unsubscribe(self, unsubscribe_token):
+        """
+        try:
+            nieuws_brief_aanmelding =  NieuwsbriefAanmelding.objects.get(unsubscribe_token=unsubscribe_token)
+            nieuws_brief_aanmelding.delete()
+        except ObjectDoesNotExist:
+            return None
+        """
+        pass
+
+    def confirm(self, confirm_token):
+        """
+        confirms a email address
+
+        try:
+            nieuws_brief_aanmelding = NieuwsbriefAanmelding.objects.get(confirm_token = confirm_token)
+            nieuws_brief_aanmelding.active = True
+            nieuws_brief_aanmelding.save()
+            return nieuws_brief_aanmelding
+        except ObjectDoesNotExist, _obj:
+            return None
+        """
+        pass
+
+newsletter_service = NewsletterService()
