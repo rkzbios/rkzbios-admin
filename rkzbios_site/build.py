@@ -4,7 +4,7 @@ import os
 NAME = "rkzbios-admin"
 
 
-def build():
+def build(username, password):
     tag = subprocess.check_output(["git", "describe"])[:-1].decode('utf-8')
 
     build_image = input("Build a image with version %s y/n ...  " % tag)
@@ -15,7 +15,12 @@ def build():
         name = "%s:%s" % (NAME, tag)
         registry_name = "dockerregistry.jimboplatform.nl/" + name
 
-        cmd = ["sudo", "docker", "build","--no-cache", "-t", name, "."]
+        cmd = ["sudo",
+               "docker",
+               "build",
+               "--build-arg", "NEXUS_USER=%s" % username,
+               "--build-arg", "NEXUS_PWD=%s" % password,
+               "--no-cache", "-t", name, "."]
         #cmd = ["sudo", "docker", "build", "-t", name, "."]
 
         subprocess.call(cmd)
@@ -32,4 +37,12 @@ def build():
             subprocess.call(cmd)
 
 
-build()
+if __name__ == "__main__":
+    import sys
+
+    if len(sys.argv) == 3:
+        username = (sys.argv[1])
+        password = (sys.argv[2])
+        build(username, password)
+    else:
+        print("Add nexus username and password")

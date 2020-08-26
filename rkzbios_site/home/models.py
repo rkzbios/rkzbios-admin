@@ -1,3 +1,5 @@
+from datetime import datetime, timezone, timedelta
+
 from django.db import models
 from django import forms
 from django.utils import timezone
@@ -16,6 +18,7 @@ from wagtail.images.api.fields import ImageRenditionField, Field
 from wagtail.core.models import Orderable
 
 from rest_framework import serializers
+
 
 
 class HomePage(Page):
@@ -59,11 +62,16 @@ class Moviedate(Orderable):
         FieldPanel('date'),
     ]
 
+    @property
+    def is_passed(self):
+        now = timezone.now() + timedelta(minutes=30)
+        return now >= self.date
+
 
 class MovieDateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Moviedate
-        fields = ['date']
+        fields = ['id','date']
 
 class KijkWijzerClassificationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -277,3 +285,5 @@ class ContentPage(Page):
         APIField('pageBackDrop'),
         APIField('body'),
     ]
+
+

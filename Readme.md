@@ -24,9 +24,10 @@ Analytics
 
 ## Create the peristent volumes
 ```
-# sudo docker volume create --name=rkzbios-mysql-data
 sudo docker volume create --name=rkzbios-media-data
 ```
+
+
 
 ## Startup the containers
 
@@ -68,13 +69,25 @@ sudo docker-compose exec rkzbios-admin python3 /code/manage.py migrate --no-inpu
 sudo docker-compose exec rkzbios-admin python3 /code/manage.py collectstatic --no-input
 ```
 
-# Backup Database
+# Backup 
+
+Docker container for run cron jobs which a performed by other containers!
+* https://github.com/cshtdd/docker-cron
+
+
+## Database
 
 '''
 sudo docker-compose exec db mysqldump -uroot -pxxxxxxx --complete-insert  rkzbios > ~/rkzbios-backup.sql
 '''
 
 Note that the datebase backup has a first line notification that must be removed.
+
+## Data
+
+* https://docs.docker.com/storage/volumes/#backup-restore-or-migrate-data-volumes
+
+sudo docker volume inspect rkzbios-media-data
 
 
 # Example queries 
@@ -95,11 +108,26 @@ http://rkzbiosapi.jimboplatform.nl/api/v2/pages/14/
 
 Remove containers
 ```
-sudo docker volume rm rkzbios-mysql-data
 sudo docker volume rm rkzbios-media-data
 ```
 
 
+
+# Mailing, newsletter
+
+## NodeJs/React
+* https://mjml.io/
+* https://github.com/chromakode/react-html-email
+* https://github.com/unlayer/react-email-editor
+
+## Python
+
+Transform css stylesheets to inline styles
+Transform relative urls to full urls
+
+* https://github.com/peterbe/premailer
+
+* https://weasyprint.readthedocs.io/
 
 # GraphQL queries
 
