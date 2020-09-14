@@ -19,10 +19,52 @@ from wagtail.core.models import Orderable
 
 from rest_framework import serializers
 
+from wagtail.core.blocks import StreamBlock
+
+class MyStreamBlock(StreamBlock):
+
+    def transform_child(self, child, context):
+        return {
+            'type': child.block.name,
+            'value': child.block.get_api_representation(child.value, context=context),
+            'id': child.id
+        }
+
+    def get_api_representation(self, value, context=None):
+        if value is None:
+            # treat None as identical to an empty stream
+            return []
+
+        result = []
+        for child in value:  # child is a StreamChild instance
+            result.append( self.transform_child(child, context))
+        return result
+
+from django.db import models
+
+
+class MyImageChooserBlock(ImageChooserBlock):
+
+    def get_api_representation(self, value, context=None):
+        return value.file.url
 
 
 class HomePage(Page):
-    pass
+    body = StreamField(MyStreamBlock([
+        ('heading', blocks.CharBlock(classname="full title")),
+        ('paragraph', blocks.TextBlock()),
+        ('link',blocks.URLBlock()),
+        ('movieList', blocks.BooleanBlock()),
+        ('image', MyImageChooserBlock()),
+    ], blank=True, null=True))
+
+    content_panels = Page.content_panels + [
+        StreamFieldPanel('body'),
+    ]
+
+    api_fields = [
+        APIField('body'),
+    ]
 
 
 class KijkWijzerClassification(models.Model):
@@ -230,34 +272,7 @@ class MoviePage(Page):
 # }
 # }
 
-from wagtail.core.blocks import StreamBlock
 
-class MyStreamBlock(StreamBlock):
-
-    def transform_child(self, child, context):
-        return {
-            'type': child.block.name,
-            'value': child.block.get_api_representation(child.value, context=context),
-            'id': child.id
-        }
-
-    def get_api_representation(self, value, context=None):
-        if value is None:
-            # treat None as identical to an empty stream
-            return []
-
-        result = []
-        for child in value:  # child is a StreamChild instance
-            result.append( self.transform_child(child, context))
-        return result
-
-from django.db import models
-
-
-class MyImageChooserBlock(ImageChooserBlock):
-
-    def get_api_representation(self, value, context=None):
-        return value.file.url
 
 
 class ContentPage(Page):

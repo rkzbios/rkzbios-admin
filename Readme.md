@@ -75,6 +75,9 @@ Docker container for run cron jobs which a performed by other containers!
 * https://github.com/cshtdd/docker-cron
 
 
+
+
+
 ## Database
 
 '''
@@ -83,11 +86,39 @@ sudo docker-compose exec db mysqldump -uroot -pxxxxxxx --complete-insert  rkzbio
 
 Note that the datebase backup has a first line notification that must be removed.
 
+
 ## Data
+
+sudo  docker run --rm --volumes-from rkzbios-admin -v $(pwd):/backup ubuntu bash -c "cd /code && tar cvf /backup/backup.tar files"
 
 * https://docs.docker.com/storage/volumes/#backup-restore-or-migrate-data-volumes
 
 sudo docker volume inspect rkzbios-media-data
+
+```
+[
+    {
+        "CreatedAt": "2019-11-28T14:06:10Z",
+        "Driver": "local",
+        "Labels": {},
+        "Mountpoint": "/var/lib/docker/volumes/rkzbios-media-data/_data",
+        "Name": "rkzbios-media-data",
+        "Options": {},
+        "Scope": "local"
+    }
+]
+```
+
+# Restoring backups
+
+## Database
+docker exec -i rkzbios-compose_db_1 mysql -uroot -pxxxxx rkzbios < ~/rkzbios-backup.sql
+
+## Data
+
+sudo docker run --rm --volumes-from rkzbios-admin -v $(pwd):/backup ubuntu bash -c "cd /code && tar xvf /backup/backup.tar"
+
+
 
 
 # Example queries 

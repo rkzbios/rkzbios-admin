@@ -22,7 +22,7 @@ MAIL_FROM = "Tickets <info@andboxdcf43d206af14bfea97d9935782f6cc4.mailgun.org>"
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.mysql',
-    'NAME': 'rkzbios',
+    'NAME': 'rkzbios_prod',
     'USER': 'rkzbios',
     'PASSWORD': 'welcome',
     'HOST': '127.0.0.1', # Or an IP Address that your DB is hosted on
