@@ -146,7 +146,7 @@ class MailService(object):
             mail_to = mail_queue_item.mailTo.strip()
 
             if settings.DEVELOPMENT:
-                email_address = settings.TEST_MAIL_ADDRESS
+                mail_to = settings.TEST_MAIL_ADDRESS
 
             response = connection.send_message(
                 mail_from,
@@ -159,7 +159,7 @@ class MailService(object):
             )
             if not response.ok:
                 # self.handle_and_store_exception(response, mail_queue_item)
-                mail_logger.info("Error sending mail to: [%s]" % email_address)
+                mail_logger.info("Error sending mail to: [%s]" % mail_to)
 
                 if mail_queue_item.nrOfSendAttempts > MAX_NR_SEND_ATTEMPTS:
                     mail_queue_item.status = SEND_FAILED_NO_RETRY
@@ -169,7 +169,7 @@ class MailService(object):
                 mail_queue_item.sendResponse = JsonSerializer().serialize(response)
                 mail_queue_item.save()
             else:
-                mail_logger.info("Sended mail to: [%s]" % email_address)
+                mail_logger.info("Sended mail to: [%s]" % mail_to)
                 if not mail_queue_item.deleteAfterSend:
                     mail_queue_item.status = SENT
                     mail_queue_item.sendResponse = JsonSerializer().serialize(response)
