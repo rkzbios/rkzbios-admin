@@ -248,7 +248,18 @@ http://rkzbiosapi.jimboplatform.nl/django-admin/jimbo_mail/mailserverconnection/
 
 # Logging
 
+## check docker logs
+
 sudo docker-compose logs rkzbios-admin
+
+## django and ticketing log
+
+The log files are in this dir:
+/var/log/docker-logs/rkzbios
+
+
+## Todo logging configuration
+https://mattsegal.dev/django-gunicorn-nginx-logging.html
 
 # Configuration
 
