@@ -1,4 +1,5 @@
 import os
+import logging
 import uuid
 from decimal import Decimal
 
@@ -13,6 +14,7 @@ from persistent.serializer import JsonSerializer
 from jimbo_mail.documents import Mail, LocalFileReference
 
 from home.models import Moviedate
+
 from tickets.models import Ticket,  SEAT_CHOICE_SINGLE, SEAT_CHOICE_DOUBLE, \
     TICKET_TYPE_STRIPPENKAART, TICKET_TYPE_BIOSCOOPPAS,TICKET_TYPE_STADJESPAS, TICKET_TYPE_STUDENENTPAS, \
     TICKET_TYPE_RKZMEMBER, TicketStatus, EMAIL_STATUS_VERIFICATION_MAIL, TICKET_STATUS_ACCEPTED, \
@@ -30,7 +32,10 @@ SEATS_AVAILABILITY = {
     SEAT_CHOICE_DOUBLE: 7
 }
 
-TICKET_PRICE = Decimal(5.00)
+tickets_logger = logging.getLogger(__name__)
+
+
+TICKET_PRICE = Decimal(7.00)
 DISCOUNT = Decimal(2.00)
 
 
@@ -63,8 +68,8 @@ def create_ticket_paths_and_name(the_date):
     relative_path_ticket = os.path.join(relative_dir, pdf_name)
     return full_path_tickets_dir, full_path_ticket, relative_path_ticket
 
-class TicketService(object):
 
+class TicketService(object):
 
     @staticmethod
     def _get_nr_accepted_tickets(movie_date_id):
@@ -73,7 +78,6 @@ class TicketService(object):
             movieDate_id=movie_date_id,
             status=TICKET_STATUS_ACCEPTED
         ).count()
-
 
     @staticmethod
     def _get_nr_available_seats(movie_date_id, nr_of_seats):
@@ -153,7 +157,6 @@ class TicketService(object):
             movieTitle=movie_title
         )
         return ticket_status
-
 
     @staticmethod
     def _no_payment(payment_types):
@@ -259,7 +262,7 @@ class TicketService(object):
         mollie_web_hook_url = '%s/api/payment/mollie-callback/%s' % (settings.MOLLIE_CALLBACK_HOST, ticket_id)
         redirect_url = '%s/ticketStatus?ticketId=%s' %  (settings.RKZBIOS_WEBSITE, ticket_id)
 
-        payment = mollie_client.payments.create({
+        payment_data = {
             'amount': {
                 'currency': 'EUR',
                 'value': str(price)
@@ -270,7 +273,13 @@ class TicketService(object):
             'metadata': {
                 'ticketId': ticket_id
             }
-        })
+        }
+
+        tickets_logger.debug("Start creating payment with data %s " % payment_data)
+
+        payment = mollie_client.payments.create(payment_data)
+
+        tickets_logger.debug("Payment created returned %s " % payment)
 
         return payment.id, payment.checkout_url, payment.status
 
@@ -285,11 +294,16 @@ class TicketService(object):
         TicketStatus(ticket=ticket, status=ticket_status).save()
 
     def _sync_payment_status(self, ticket_id):
+        tickets_logger.debug("Start sync payment for ticket_id %s " % ticket_id)
+
         ticket = Ticket.objects.get(id=ticket_id)
         status_before = ticket.status
 
         mollie_client = self._get_mollie_client()
+
         payment = mollie_client.payments.get(ticket.paymentId)
+
+        tickets_logger.debug("Payment status returned %s " % payment)
 
         status = TICKET_STATUS_REJECTED
         payment_status = payment['status']

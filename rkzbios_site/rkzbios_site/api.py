@@ -5,6 +5,9 @@ from django.conf.urls import url
 from rest_framework.serializers import ListSerializer
 from rest_framework.utils.serializer_helpers import ReturnList
 
+from rest_framework import status
+from rest_framework.response import Response
+
 from wagtail.api.v2.endpoints import PagesAPIEndpoint
 from wagtail.api.v2.router import WagtailAPIRouter
 from wagtail.api.v2.serializers import PageSerializer
@@ -123,7 +126,19 @@ class MoviePagesAPIEndpoint(PagesAPIEndpoint):
 
         else:
             base = super().get_object()
-        return base.specific
+        if base:
+            return base.specific
+        else:
+            return None
+
+
+    def detail_view(self, request, pk):
+        instance = self.get_object()
+        if instance:
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data)
+        else:
+            return Response({}, status=status.HTTP_404_NOT_FOUND)
 
     @classmethod
     def get_urlpatterns(cls):

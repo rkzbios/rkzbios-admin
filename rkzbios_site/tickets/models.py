@@ -146,6 +146,9 @@ class Ticket(models.Model):
             return "DuoTeat"
         return "%s Seats" % self.nrOfSeats
 
+    class Meta:
+        ordering = ('-createdAt', 'movieDate', )
+
 
 class TicketStatus(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True)

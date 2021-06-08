@@ -229,3 +229,18 @@ query{
   }
 }
 ```
+# TODO 
+
+* Mailgun productie gereed maken
+* Toevoegen logging ticketing/payment
+* Printen van tickets
+* Teksten aanpassen
+
+
+
+
+# Naar productie brengen ticketing
+
+Pas de mailgun connection aan voor productie:
+
+http://rkzbiosapi.jimboplatform.nl/django-admin/jimbo_mail/mailserverconnection/f479b691-ea6d-436e-a088-5645467e0849/change/

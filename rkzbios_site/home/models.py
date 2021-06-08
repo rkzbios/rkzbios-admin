@@ -109,11 +109,15 @@ class Moviedate(Orderable):
         now = timezone.now() + timedelta(minutes=30)
         return now >= self.date
 
+    class Meta:
+        ordering = ('-date', )
+
 
 class MovieDateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Moviedate
         fields = ['id','date']
+
 
 class KijkWijzerClassificationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -125,7 +129,6 @@ class ExternalLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExternalLink
         fields = ['typeLink','linkExternal']
-
 
 
 class MoviePage(Page):
@@ -271,8 +274,6 @@ class MoviePage(Page):
 #
 # }
 # }
-
-
 
 
 class ContentPage(Page):

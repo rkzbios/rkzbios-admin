@@ -12,6 +12,6 @@ urlpatterns = [
     path('availability/<int:movie_date_id>/', get_available_tickets),
     path('mollie-callback/<str:ticket_id>/', mollie_callback),
     path('ticket-print-data/<str:ticket_id>/', get_ticket_print_data),
-    path('export-tickets/<int:movie_date_id>/', export_movie_date_ticket_codes,name='export-movie-date-ticket-codes')
+    path('export-tickets/<int:movie_date_id>/', export_movie_date_ticket_codes, name='export-movie-date-ticket-codes')
 
 ]
