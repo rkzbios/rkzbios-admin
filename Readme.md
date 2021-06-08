@@ -244,3 +244,13 @@ query{
 Pas de mailgun connection aan voor productie:
 
 http://rkzbiosapi.jimboplatform.nl/django-admin/jimbo_mail/mailserverconnection/f479b691-ea6d-436e-a088-5645467e0849/change/
+
+
+# Logging
+
+sudo docker-compose logs rkzbios-admin
+
+# Configuration
+
+The configuration for rkz-admin 
+{docker-compose-dir}/config/django/settings

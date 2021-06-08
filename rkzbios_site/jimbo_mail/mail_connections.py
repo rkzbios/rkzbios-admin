@@ -43,7 +43,7 @@ class MailConnection(object):
         pass
 
 class MailGunConnection(MailConnection):
-    BASE_URL = 'https://api.mailgun.net/v3'
+    BASE_URL = 'https://api.eu.mailgun.net/v3'
 
     def __init__(self, domain, private_key, public_key=None):
         self.domain = domain
