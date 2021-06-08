@@ -199,7 +199,7 @@ class TicketService(object):
                                   (settings.RKZBIOS_WEBSITE, mail_confirmation_id)
 
         mail = Mail(
-            subject="Confirm your ticket request RKZBkios",
+            subject="Confirm your ticket request RKZBios",
             mailText="Please confirm your ticket request at this page %s" % ticket_confirmation_url
         )
         self._send_mail(mail, mail_to)
@@ -397,8 +397,8 @@ class TicketService(object):
             try:
                 ticket = Ticket.objects.get(id=ticket_id)
                 mail = Mail(
-                    subject="Tickets RKZBkios",
-                    mailText="Hierbij de tickets van de RKZBios",
+                    subject="Tickets RKZBios",
+                    mailText="Hereby the tickets of the RKZBios",
                     attachments=[LocalFileReference(fileName=os.path.join(settings.MEDIA_ROOT, ticket.ticketPdf.name))]
                 )
                 self._send_mail(mail,ticket.email)
