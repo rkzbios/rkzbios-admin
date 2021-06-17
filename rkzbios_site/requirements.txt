@@ -1,5 +1,5 @@
 Django>=2.2,<2.3
-wagtail>=2.7,<2.8
+wagtail>=2.7,<2.12
 graphene-django>=2.0
 mysqlclient
 django-cors-headers==3.2.0
