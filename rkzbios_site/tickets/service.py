@@ -199,8 +199,8 @@ class TicketService(object):
                                   (settings.RKZBIOS_WEBSITE, mail_confirmation_id)
 
         mail = Mail(
-            subject="Confirm your ticket request RKZBios",
-            mailText="Please confirm your ticket request at this page %s" % ticket_confirmation_url
+            subject="Bevestig uw ticket aanvraag van de RKZBios",
+            mailText="Wilt U uw ticket aanvraag bevestigen door op de bevestig knop te klikken op deze pagina: %s" % ticket_confirmation_url
         )
         self._send_mail(mail, mail_to)
         return mail_confirmation_id
