@@ -288,6 +288,7 @@ class ContentPage(Page):
         ('heading', blocks.CharBlock(classname="full title")),
         ('paragraph', blocks.TextBlock()),
         ('image', MyImageChooserBlock()),
+        ('richContent', blocks.RichTextBlock(features=['h2', 'h3', 'ol', 'ul','hr','bold', 'italic', 'link'])),
     ], blank=True, null=True))
 
 
@@ -301,5 +302,4 @@ class ContentPage(Page):
         APIField('pageBackDrop'),
         APIField('body'),
     ]
-
 
