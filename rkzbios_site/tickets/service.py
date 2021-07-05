@@ -398,7 +398,7 @@ class TicketService(object):
                 ticket = Ticket.objects.get(id=ticket_id)
                 mail = Mail(
                     subject="Tickets RKZBios",
-                    mailText="Hereby the tickets of the RKZBios",
+                    mailText="Bijgevoegd zijn de tickets van de RKZBios",
                     attachments=[LocalFileReference(fileName=os.path.join(settings.MEDIA_ROOT, ticket.ticketPdf.name))]
                 )
                 self._send_mail(mail,ticket.email)
