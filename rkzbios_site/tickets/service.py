@@ -28,8 +28,8 @@ from tickets.utils import create_pdf, create_acccess_token, get_short_code
 PAYMENT_TYPES_WITH_DISCOUNT = [TICKET_TYPE_STADJESPAS, TICKET_TYPE_STUDENENTPAS, TICKET_TYPE_RKZMEMBER]
 
 SEATS_AVAILABILITY = {
-    SEAT_CHOICE_SINGLE: 6,
-    SEAT_CHOICE_DOUBLE: 7
+    SEAT_CHOICE_SINGLE: 68,
+    SEAT_CHOICE_DOUBLE: 0
 }
 
 tickets_logger = logging.getLogger(__name__)
@@ -39,11 +39,11 @@ TICKET_PRICE = Decimal(7.00)
 DISCOUNT = Decimal(2.00)
 
 
-TICKET_FULLFILL_TIME_FRAME_MINUTES = 15
+TICKET_FULL_FILL_TIME_FRAME_MINUTES = 15
 
 
 def get_time_frame_max():
-    open_within_time = timezone.now() - timedelta(minutes=TICKET_FULLFILL_TIME_FRAME_MINUTES)
+    open_within_time = timezone.now() - timedelta(minutes=TICKET_FULL_FILL_TIME_FRAME_MINUTES)
     return open_within_time
 
 
