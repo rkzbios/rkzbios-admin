@@ -2,3 +2,4 @@
 python/
 rkzbios_site/db.sqlite3
 rkzbios_site/files
+/rkzbios_site/rkzbios_site/settings/production.py

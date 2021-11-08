@@ -106,7 +106,7 @@ class Moviedate(Orderable):
 
     @property
     def is_passed(self):
-        now = timezone.now() + timedelta(minutes=30)
+        now = timezone.now() + timedelta(minutes=60)
         return now >= self.date
 
     class Meta:
