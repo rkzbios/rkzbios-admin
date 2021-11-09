@@ -117,7 +117,7 @@ class Moviedate(Orderable):
         return local_now + timedelta(minutes=60)
 
     class Meta:
-        ordering = ('-date', )
+        ordering = ('date', )
 
 
 class MovieDateSerializer(serializers.ModelSerializer):

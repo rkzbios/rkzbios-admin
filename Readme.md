@@ -1,4 +1,9 @@
+# Building Docker image
 
+python build.py {username nexus} {password nexus}
+
+
+# Etc
 
 http://docs.wagtail.io/en/v2.6.2/topics/streamfield.html#structural-block-types
 
