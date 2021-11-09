@@ -4,6 +4,8 @@ from django.db import models
 from django import forms
 from django.utils import timezone
 
+from pytz import timezone as pytz_timezone
+
 from modelcluster.fields import ParentalKey
 from modelcluster.fields import ParentalManyToManyField
 
@@ -106,8 +108,13 @@ class Moviedate(Orderable):
 
     @property
     def is_passed(self):
-        now = timezone.now() + timedelta(minutes=60)
-        return now >= self.date
+        return self.latest_sell_time >= self.date
+
+    @property
+    def latest_sell_time(self):
+        amsterdam_tz = pytz_timezone('Europe/Amsterdam')
+        local_now = datetime.now(amsterdam_tz)
+        return local_now + timedelta(minutes=60)
 
     class Meta:
         ordering = ('-date', )

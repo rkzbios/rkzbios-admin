@@ -43,6 +43,7 @@ class TicketAvailability(Model):
     movieDateId = fields.IntegerField()
     movieTitle = fields.CharField()
     movieDate = fields.DateTimeField()
+    latestSellTime= fields.DateTimeField()
     isPassed = fields.BooleanField()
     nrOfSingleSeatsTicketsAvailable = fields.IntegerField()
     nrOfDoubleSeatsTicketsAvailable = fields.IntegerField()

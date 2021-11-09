@@ -98,6 +98,19 @@ def ticket_mail_confirmation(request, confirmation_id):
     return response
 
 
+def obfuscate_email_address(email_address):
+    try:
+        local_part, domain_name = email_address.split('@')
+        local_parts = local_part.split('.')
+        for i, part in enumerate(local_parts):
+            replaced_email = "".join("*" for _char in part[1:-1])
+            last_char = part[-1] if len(part) > 2 else "*"
+            local_parts[i] = "".join((part[0], replaced_email, last_char))
+        replace_local_parts = ".".join(local_parts)
+        return replace_local_parts + "@" + domain_name
+    except Exception as _e:
+        return ""
+
 @login_required
 def export_movie_date_ticket_codes(request, movie_date_id):
     from tickets.models import Ticket, TICKET_STATUS_ACCEPTED
@@ -115,6 +128,6 @@ def export_movie_date_ticket_codes(request, movie_date_id):
                          accepted_ticket.get_seat_type_str(),
                          accepted_ticket.get_ticket_types_str(),
                          accepted_ticket.referenceNumber,
-                         ticket_request.email
+                         obfuscate_email_address(ticket_request.email)
                          ])
     return response

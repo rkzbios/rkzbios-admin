@@ -5,6 +5,8 @@ from decimal import Decimal
 
 from datetime import timedelta
 
+
+from pytz import timezone as pytz_timezone
 from django.utils import timezone
 from django.db import transaction
 from django.db.models import Q
@@ -129,11 +131,14 @@ class TicketService(object):
         nr_of_single_seats_available = self._get_nr_available_seats(movie_date_id, SEAT_CHOICE_SINGLE)
         nr_of_double_seats_available = self._get_nr_available_seats(movie_date_id, SEAT_CHOICE_DOUBLE)
 
+        amsterdam_tz = pytz_timezone('Europe/Amsterdam')
+        timezone_aware_date =  movie_date.date.astimezone(amsterdam_tz)
         availability_data = TicketAvailability(
             movieTitle=movie_date.page.title,
             movieDateId=movie_date_id,
-            movieDate=movie_date.date,
+            movieDate=timezone_aware_date,
             isPassed=movie_date.is_passed,
+            latestSellTime=movie_date.latest_sell_time,
             nrOfSingleSeatsTicketsAvailable=nr_of_single_seats_available,
             nrOfDoubleSeatsTicketsAvailable=nr_of_double_seats_available
         )
