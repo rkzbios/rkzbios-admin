@@ -43,6 +43,11 @@ DISCOUNT = Decimal(2.00)
 
 TICKET_FULL_FILL_TIME_FRAME_MINUTES = 15
 
+def get_tz_aware_date(date):
+    amsterdam_tz = pytz_timezone('Europe/Amsterdam')
+    timezone_aware_date = date.astimezone(amsterdam_tz)
+    return timezone_aware_date
+
 
 def get_time_frame_max():
     open_within_time = timezone.now() - timedelta(minutes=TICKET_FULL_FILL_TIME_FRAME_MINUTES)
@@ -111,11 +116,12 @@ class TicketService(object):
             qr_code = ticket.code
             ticket_number = ticket.referenceNumber
 
+
             ticket_print_data = TicketPrintData(
                 code=code,
                 ticketNumber=ticket_number,
                 ticketRequest=ticket_request,
-                movieDate=movie_date,
+                movieDate=get_tz_aware_date(movie_date),
                 movieTitle=movie_title,
                 qrCode=qr_code
             )
@@ -131,12 +137,10 @@ class TicketService(object):
         nr_of_single_seats_available = self._get_nr_available_seats(movie_date_id, SEAT_CHOICE_SINGLE)
         nr_of_double_seats_available = self._get_nr_available_seats(movie_date_id, SEAT_CHOICE_DOUBLE)
 
-        amsterdam_tz = pytz_timezone('Europe/Amsterdam')
-        timezone_aware_date =  movie_date.date.astimezone(amsterdam_tz)
         availability_data = TicketAvailability(
             movieTitle=movie_date.page.title,
             movieDateId=movie_date_id,
-            movieDate=timezone_aware_date,
+            movieDate=get_tz_aware_date(movie_date),
             isPassed=movie_date.is_passed,
             latestSellTime=movie_date.latest_sell_time,
             nrOfSingleSeatsTicketsAvailable=nr_of_single_seats_available,
@@ -158,7 +162,7 @@ class TicketService(object):
         ticket_status = TicketStatus(
             status=ticket.status,
             ticketRequest=ticket.get_ticket_request(),
-            movieDate=movie_date,
+            movieDate=get_tz_aware_date(movie_date),
             movieTitle=movie_title
         )
         return ticket_status
@@ -249,7 +253,7 @@ class TicketService(object):
             return MailConfirmation(
                     confirmationId=mail_confirmation_id,
                     movieTitle=movie_title,
-                    movieDate=movie_date,
+                    movieDate=get_tz_aware_date(movie_date),
                     confirmationStatus=confirmation_status
             )
         else:
@@ -499,7 +503,7 @@ class TicketService(object):
                 seatType= ticket.get_seat_type_str(),
                 paymentType=ticket.get_ticket_types_str(),
                 movieDateId=ticket.movieDate.id,
-                moviedate=ticket.movieDate.date,
+                moviedate=get_tz_aware_date(ticket.movieDate.date),
                 movieTitle=ticket.movieDate.page.title,
                 qrCode=ticket.code
             )
