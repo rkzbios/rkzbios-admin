@@ -268,7 +268,7 @@ class TicketService(object):
     def _create_payment(self, ticket_id, price, description):
 
         mollie_client = self._get_mollie_client()
-        mollie_web_hook_url = '%s/api/payment/mollie-callback/%s' % (settings.MOLLIE_CALLBACK_HOST, ticket_id)
+        mollie_web_hook_url = '%s/api/tickets/mollie-callback/%s/' % (settings.MOLLIE_CALLBACK_HOST, ticket_id)
         redirect_url = '%s/ticketStatus?ticketId=%s' %  (settings.RKZBIOS_WEBSITE, ticket_id)
 
         payment_data = {
@@ -277,7 +277,7 @@ class TicketService(object):
                 'value': str(price)
             },
             'description': description,
-        #    'webhookUrl': mollie_web_hook_url,
+            'webhookUrl': mollie_web_hook_url,
             'redirectUrl': redirect_url,
             'metadata': {
                 'ticketId': ticket_id

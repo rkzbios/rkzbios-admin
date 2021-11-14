@@ -53,9 +53,8 @@ def get_available_tickets(request, movie_date_id):
 
 
 def mollie_callback(request, ticket_id):
-    if request.method == 'POST':
-        ticket_service.sync_payment_status(ticket_id)
-        return HttpResponse("ok")
+    ticket_service.sync_payment_status(ticket_id)
+    return HttpResponse("ok")
 
 
 def get_ticket_status(request, ticket_id):
