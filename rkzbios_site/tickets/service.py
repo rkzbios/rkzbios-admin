@@ -140,7 +140,7 @@ class TicketService(object):
         availability_data = TicketAvailability(
             movieTitle=movie_date.page.title,
             movieDateId=movie_date_id,
-            movieDate=get_tz_aware_date(movie_date),
+            movieDate=get_tz_aware_date(movie_date.date),
             isPassed=movie_date.is_passed,
             latestSellTime=movie_date.latest_sell_time,
             nrOfSingleSeatsTicketsAvailable=nr_of_single_seats_available,
