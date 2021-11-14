@@ -52,6 +52,7 @@ def get_available_tickets(request, movie_date_id):
         return response
 
 
+@csrf_exempt
 def mollie_callback(request, ticket_id):
     ticket_service.sync_payment_status(ticket_id)
     return HttpResponse("ok")
