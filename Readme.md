@@ -266,7 +266,12 @@ The log files are in this dir:
 ## Todo logging configuration
 https://mattsegal.dev/django-gunicorn-nginx-logging.html
 
+Use of https://github.com/Preston-Landers/concurrent-log-handler rotating, so email addresses are not stored.
+https://xxx-cook-book.gitbooks.io/django-cook-book/content/Logs/Handlers/FileHandler/concurrent-log-handler.html
+Or we have to obfuscate data that is returned from mollie.
+
 # Configuration
 
-The configuration for rkz-admin 
+THIS IS NOT USED!!! The configuration for rkz-admin 
+
 {docker-compose-dir}/config/django/settings

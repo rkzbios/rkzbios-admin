@@ -54,7 +54,8 @@ PAYMENT_STATUS_PENDING = 'pending' # This is a temporary status that can occur w
 PAYMENT_STATUS_AUTHORIZED = 'authorized' #
 PAYMENT_STATUS_EXPIRED = 'expired' #
 PAYMENT_STATUS_FAILED = 'failed' #
-PAYMENT_STATUS_PAYED = 'payed' #
+PAYMENT_STATUS_PAYED = 'paid' #
+PAYMENT_STATUS_PAYED_FIX = 'paid' #
 PAYMENT_STATUS_REFUNDED = 'refunded'
 
 EMAIL_STATUS_VERIFICATION_MAIL = 'sended-vmail'
@@ -67,7 +68,8 @@ STATUS_CHOICES = [
     (PAYMENT_STATUS_AUTHORIZED, 'authorized'),
     (PAYMENT_STATUS_EXPIRED, 'expired'),
     (PAYMENT_STATUS_FAILED, 'failed'),
-    (PAYMENT_STATUS_PAYED, 'payed'),
+    (PAYMENT_STATUS_PAYED_FIX, 'paid'),
+    (PAYMENT_STATUS_PAYED, 'payed'), #??
     (PAYMENT_STATUS_REFUNDED, 'refunded'),
     (EMAIL_STATUS_VERIFICATION_MAIL,'sended-vmail'),
     (EMAIL_STATUS_EMAIL_VERIFIED,'email-verified'),

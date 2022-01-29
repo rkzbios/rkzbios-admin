@@ -30,8 +30,8 @@ from tickets.utils import create_pdf, create_acccess_token, get_short_code
 PAYMENT_TYPES_WITH_DISCOUNT = [TICKET_TYPE_STADJESPAS, TICKET_TYPE_STUDENENTPAS, TICKET_TYPE_RKZMEMBER]
 
 SEATS_AVAILABILITY = {
-    SEAT_CHOICE_SINGLE: 68,
-    SEAT_CHOICE_DOUBLE: 0
+    SEAT_CHOICE_SINGLE: 6,
+    SEAT_CHOICE_DOUBLE: 7
 }
 
 tickets_logger = logging.getLogger(__name__)
@@ -295,11 +295,13 @@ class TicketService(object):
     @transaction.atomic()
     def _save_ticket_status(self, ticket_id, status, ticket_status):
         ticket = Ticket.objects.get(id=ticket_id)
-        ticket.status = status
-        if status == TICKET_STATUS_ACCEPTED:
-            ticket.code = get_short_code()
-            ticket.referenceNumber = self._get_nr_accepted_tickets(ticket.movieDate_id) + 1
-        ticket.save()
+        current_status = ticket.status
+        if current_status != TICKET_STATUS_ACCEPTED:
+            ticket.status = status
+            if status == TICKET_STATUS_ACCEPTED:
+                ticket.code = get_short_code()
+                ticket.referenceNumber = self._get_nr_accepted_tickets(ticket.movieDate_id) + 1
+            ticket.save()
         TicketStatus(ticket=ticket, status=ticket_status).save()
 
     def _sync_payment_status(self, ticket_id):
