@@ -271,6 +271,8 @@ class TicketService(object):
         mollie_web_hook_url = '%s/api/tickets/mollie-callback/%s/' % (settings.MOLLIE_CALLBACK_HOST, ticket_id)
         redirect_url = '%s/ticketStatus?ticketId=%s' %  (settings.RKZBIOS_WEBSITE, ticket_id)
 
+        # tickets_logger.info("mollie url %s " % mollie_web_hook_url)
+
         payment_data = {
             'amount': {
                 'currency': 'EUR',
@@ -302,7 +304,7 @@ class TicketService(object):
                 ticket.code = get_short_code()
                 ticket.referenceNumber = self._get_nr_accepted_tickets(ticket.movieDate_id) + 1
             ticket.save()
-        TicketStatus(ticket=ticket, status=ticket_status).save()
+            TicketStatus(ticket=ticket, status=ticket_status).save()
 
     def _sync_payment_status(self, ticket_id):
         tickets_logger.debug("Start sync payment for ticket_id %s " % ticket_id)
