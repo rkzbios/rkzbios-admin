@@ -30,8 +30,8 @@ from tickets.utils import create_pdf, create_acccess_token, get_short_code
 PAYMENT_TYPES_WITH_DISCOUNT = [TICKET_TYPE_STADJESPAS, TICKET_TYPE_STUDENENTPAS, TICKET_TYPE_RKZMEMBER]
 
 SEATS_AVAILABILITY = {
-    SEAT_CHOICE_SINGLE: 6,
-    SEAT_CHOICE_DOUBLE: 7
+    SEAT_CHOICE_SINGLE: 68,
+    SEAT_CHOICE_DOUBLE: 0
 }
 
 tickets_logger = logging.getLogger(__name__)
