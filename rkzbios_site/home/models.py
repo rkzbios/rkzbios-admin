@@ -123,7 +123,7 @@ class Moviedate(Orderable):
 class MovieDateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Moviedate
-        fields = ['id','date']
+        fields = ['id','date', 'is_passed']
 
 
 class KijkWijzerClassificationSerializer(serializers.ModelSerializer):
