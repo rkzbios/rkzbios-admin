@@ -24,7 +24,7 @@ mollie-api-python==2.4.0
 mysqlclient==1.4.5
 oauthlib==3.1.0
 persistent-object-documents==3.0.1
-Pillow==6.2.1
+Pillow==9.0.1
 promise==2.2.1
 pyasn1==0.4.8
 pycryptodome==3.9.8
